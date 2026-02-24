@@ -19,8 +19,8 @@ public class StatsMapper {
                 .build();
     }
 
-    public List<StatResponseDto> mapToListStatResponseDto(List<StatView> StatViews) {
-        return StatViews.stream()
+    public List<StatResponseDto> mapToListStatResponseDto(List<StatView> statViews) {
+        return statViews.stream()
                 .map(v -> StatResponseDto.builder()
                         .app(v.getApp())
                         .uri(v.getUri())
