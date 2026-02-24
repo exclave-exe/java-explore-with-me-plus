@@ -1,4 +1,4 @@
-package ru.prcticum.client;
+package ru.practicum.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
