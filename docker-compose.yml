@@ -1,46 +1,46 @@
-services:
-  stats-server:
-    build: ./ewm-stats-service/stats-server
-    image: stats-server:latest
-    container_name: stats-server
-    ports:
-      - "9090:9090"
-    depends_on:
-      - stats-db
-    environment:
-      - STATS_DB_URL=jdbc:postgresql://stats-db:5432/stats_db
-      - STATS_DB_USER=stats_db
-      - STATS_DB_PASSWORD=12345
+  services:
+    stats-server:
+      build: ./ewm-stats-service/stats-server
+      image: stats-server:latest
+      container_name: stats-server
+      ports:
+        - "9090:9090"
+      depends_on:
+        - stats-db
+      environment:
+        - STATS_DB_URL=jdbc:postgresql://stats-db:5432/stats_db
+        - STATS_DB_USER=stats_db
+        - STATS_DB_PASSWORD=12345
 
-  stats-db:
-    image: postgres:16.1
-    container_name: stats-db
-    ports:
-      - "6541:5432"
-    environment:
-      - POSTGRES_DB=stats_db
-      - POSTGRES_USER=stats_db
-      - POSTGRES_PASSWORD=12345
+    stats-db:
+      image: postgres:16.1
+      container_name: stats-db
+      ports:
+        - "6541:5432"
+      environment:
+        - POSTGRES_DB=stats_db
+        - POSTGRES_USER=stats_db
+        - POSTGRES_PASSWORD=12345
 
-  ewm-service:
-    build: ./ewm-main-service
-    image: ewm-main-service:latest
-    container_name: ewm-service
-    ports:
-      - "8080:8080"
-    depends_on:
-      - ewm-db
-    environment:
-      - MAIN_DB_URL=jdbc:postgresql://ewm-db:5432/main_db
-      - MAIN_DB_USER=main_db
-      - MAIN_DB_PASSWORD=12345
+    ewm-service:
+      build: ./ewm-main-service
+      image: ewm-main-service:latest
+      container_name: ewm-service
+      ports:
+        - "8080:8080"
+      depends_on:
+        - ewm-db
+      environment:
+        - MAIN_DB_URL=jdbc:postgresql://ewm-db:5432/main_db
+        - MAIN_DB_USER=main_db
+        - MAIN_DB_PASSWORD=12345
 
-  ewm-db:
-    image: postgres:16.1
-    container_name: ewm-db
-    ports:
-      - "6542:5432"
-    environment:
-      - POSTGRES_DB=main_db
-      - POSTGRES_USER=main_db
-      - POSTGRES_PASSWORD=12345
+    ewm-db:
+      image: postgres:16.1
+      container_name: ewm-db
+      ports:
+        - "6542:5432"
+      environment:
+        - POSTGRES_DB=main_db
+        - POSTGRES_USER=main_db
+        - POSTGRES_PASSWORD=12345
