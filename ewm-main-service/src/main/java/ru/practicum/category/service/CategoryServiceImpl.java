@@ -1,16 +1,16 @@
-package ru.practicum.service;
+package ru.practicum.category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.CategoryCreateDto;
-import ru.practicum.dto.CategoryResponseDto;
-import ru.practicum.dto.CategoryUpdateDto;
+import ru.practicum.category.dto.CategoryCreateDto;
+import ru.practicum.category.dto.CategoryResponseDto;
+import ru.practicum.category.dto.CategoryUpdateDto;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.mapper.CategoryMapper;
-import ru.practicum.model.Category;
-import ru.practicum.repository.CategoryRepository;
+import ru.practicum.category.mapper.CategoryMapper;
+import ru.practicum.category.model.Category;
+import ru.practicum.category.repository.CategoryRepository;
 
 import java.util.List;
 
@@ -60,6 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
     }

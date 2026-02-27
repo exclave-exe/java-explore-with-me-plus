@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum.category.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.CategoryCreateDto;
-import ru.practicum.dto.CategoryResponseDto;
-import ru.practicum.dto.CategoryUpdateDto;
-import ru.practicum.service.CategoryService;
+import ru.practicum.category.dto.CategoryCreateDto;
+import ru.practicum.category.dto.CategoryResponseDto;
+import ru.practicum.category.dto.CategoryUpdateDto;
+import ru.practicum.category.service.CategoryService;
 
 @RestController
 @RequestMapping("/admin/categories")

@@ -1,14 +1,14 @@
-package ru.practicum.service;
+package ru.practicum.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.UserCreateDto;
-import ru.practicum.dto.UserResponseDto;
+import ru.practicum.user.dto.UserCreateDto;
+import ru.practicum.user.dto.UserResponseDto;
+import ru.practicum.user.mapper.UserMapper;
+import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
 import ru.practicum.exception.ConflictException;
-import ru.practicum.mapper.UserMapper;
-import ru.practicum.model.User;
-import ru.practicum.repository.UserRepository;
 
 import java.util.List;
 
@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }

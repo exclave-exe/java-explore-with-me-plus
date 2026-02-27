@@ -1,9 +1,9 @@
-package ru.practicum.mapper;
+package ru.practicum.user.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.dto.UserCreateDto;
-import ru.practicum.dto.UserResponseDto;
-import ru.practicum.model.User;
+import ru.practicum.user.dto.UserCreateDto;
+import ru.practicum.user.dto.UserResponseDto;
+import ru.practicum.user.model.User;
 
 import java.util.List;
 
