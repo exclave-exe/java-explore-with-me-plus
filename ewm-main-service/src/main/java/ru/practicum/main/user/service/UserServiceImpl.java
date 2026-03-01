@@ -1,14 +1,14 @@
-package ru.practicum.user.service;
+package ru.practicum.main.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.user.dto.UserCreateDto;
-import ru.practicum.user.dto.UserResponseDto;
-import ru.practicum.user.mapper.UserMapper;
-import ru.practicum.user.model.User;
-import ru.practicum.user.repository.UserRepository;
-import ru.practicum.exception.ConflictException;
+import ru.practicum.main.user.dto.UserCreateDto;
+import ru.practicum.main.user.dto.UserResponseDto;
+import ru.practicum.main.user.mapper.UserMapper;
+import ru.practicum.main.user.model.User;
+import ru.practicum.main.user.repository.UserRepository;
+import ru.practicum.main.exception.ConflictException;
 
 import java.util.List;
 

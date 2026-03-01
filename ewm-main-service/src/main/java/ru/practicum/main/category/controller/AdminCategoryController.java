@@ -1,4 +1,4 @@
-package ru.practicum.category.controller;
+package ru.practicum.main.category.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.category.dto.CategoryCreateDto;
-import ru.practicum.category.dto.CategoryResponseDto;
-import ru.practicum.category.dto.CategoryUpdateDto;
-import ru.practicum.category.service.CategoryService;
+import ru.practicum.main.category.dto.CategoryCreateDto;
+import ru.practicum.main.category.dto.CategoryDto;
+import ru.practicum.main.category.dto.CategoryUpdateDto;
+import ru.practicum.main.category.service.CategoryService;
 
 @RestController
 @RequestMapping("/admin/categories")
@@ -24,14 +24,14 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryResponseDto createCategory(@RequestBody @Valid CategoryCreateDto categoryCreateDto) {
+    public CategoryDto createCategory(@RequestBody @Valid CategoryCreateDto categoryCreateDto) {
         log.info("Creating category: name={}", categoryCreateDto.getName());
         return categoryService.createCategory(categoryCreateDto);
     }
 
     @PatchMapping("/{catId}")
-    public CategoryResponseDto updateCategory(@PathVariable @Positive Long catId,
-                                              @RequestBody @Valid CategoryUpdateDto categoryUpdateDto) {
+    public CategoryDto updateCategory(@PathVariable @Positive Long catId,
+                                      @RequestBody @Valid CategoryUpdateDto categoryUpdateDto) {
         log.info("Creating category: new name={}", categoryUpdateDto.getName());
         return categoryService.updateCategory(catId, categoryUpdateDto);
     }

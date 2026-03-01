@@ -1,16 +1,17 @@
-package ru.practicum.category.service;
+package ru.practicum.main.category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.dto.CategoryCreateDto;
-import ru.practicum.category.dto.CategoryResponseDto;
-import ru.practicum.category.dto.CategoryUpdateDto;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.category.mapper.CategoryMapper;
-import ru.practicum.category.model.Category;
-import ru.practicum.category.repository.CategoryRepository;
+import ru.practicum.main.category.dto.CategoryCreateDto;
+import ru.practicum.main.category.dto.CategoryDto;
+import ru.practicum.main.category.dto.CategoryUpdateDto;
+import ru.practicum.main.event.repository.EventRepository;
+import ru.practicum.main.exception.ConflictException;
+import ru.practicum.main.exception.NotFoundException;
+import ru.practicum.main.category.mapper.CategoryMapper;
+import ru.practicum.main.category.model.Category;
+import ru.practicum.main.category.repository.CategoryRepository;
 
 import java.util.List;
 
@@ -20,10 +21,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final EventRepository eventRepository;
 
     @Override
     @Transactional
-    public CategoryResponseDto createCategory(CategoryCreateDto categoryCreateDto) {
+    public CategoryDto createCategory(CategoryCreateDto categoryCreateDto) {
         validateCategoryNameExists(categoryCreateDto.getName());
         Category categoryToCreate = categoryMapper.mapToCategory(categoryCreateDto);
         Category createdCategory = categoryRepository.save(categoryToCreate);
@@ -32,21 +34,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryResponseDto getCategoryById(Long id) {
+    public CategoryDto getCategoryById(Long id) {
         Category existingCategory = getCategoryOrThrow(id);
         return categoryMapper.mapToResponseDto(existingCategory);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoryResponseDto> getCategories(Integer from, Integer size) {
+    public List<CategoryDto> getCategories(Integer from, Integer size) {
         List<Category> existingCategories = categoryRepository.findAllWithOffset(from, size);
         return categoryMapper.mapToListResponseDto(existingCategories);
     }
 
     @Override
     @Transactional
-    public CategoryResponseDto updateCategory(Long id, CategoryUpdateDto categoryUpdateDto) {
+    public CategoryDto updateCategory(Long id, CategoryUpdateDto categoryUpdateDto) {
         Category existingCategory = getCategoryOrThrow(id);
         String oldName = existingCategory.getName();
         String newName = categoryUpdateDto.getName();
@@ -62,6 +64,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(Long id) {
+        if (eventRepository.existsByCategory_Id(id))
+            throw new ConflictException("Category " + id + " is attached to existing events and cannot be removed");
+
         categoryRepository.deleteById(id);
     }
 

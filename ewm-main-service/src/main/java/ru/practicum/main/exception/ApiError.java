@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class ErrorResponse {
+public class ApiError {
     private String status;
     private String reason;
     private String message;
@@ -17,6 +17,6 @@ public class ErrorResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
-    List<String> errors;
+    List<StackTraceElement> errors;
 }
 

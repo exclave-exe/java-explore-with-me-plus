@@ -1,9 +1,9 @@
-package ru.practicum.category.mapper;
+package ru.practicum.main.category.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.category.dto.CategoryCreateDto;
-import ru.practicum.category.dto.CategoryResponseDto;
-import ru.practicum.category.model.Category;
+import ru.practicum.main.category.dto.CategoryCreateDto;
+import ru.practicum.main.category.dto.CategoryDto;
+import ru.practicum.main.category.model.Category;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ public class CategoryMapper {
                 .build();
     }
 
-    public CategoryResponseDto mapToResponseDto(Category category) {
-        return CategoryResponseDto.builder()
+    public CategoryDto mapToResponseDto(Category category) {
+        return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .build();
     }
 
-    public List<CategoryResponseDto> mapToListResponseDto(List<Category> categories) {
+    public List<CategoryDto> mapToListResponseDto(List<Category> categories) {
         return categories.stream()
                 .map(this::mapToResponseDto)
                 .toList();

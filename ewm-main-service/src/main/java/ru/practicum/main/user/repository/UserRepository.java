@@ -1,9 +1,9 @@
-package ru.practicum.user.repository;
+package ru.practicum.main.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.user.model.User;
+import ru.practicum.main.user.model.User;
 
 import java.util.List;
 
