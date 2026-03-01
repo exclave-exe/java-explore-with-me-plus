@@ -1,10 +1,10 @@
-package ru.practicum.mapper;
+package ru.practicum.stats.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.dto.StatRequestDto;
-import ru.practicum.dto.StatResponseDto;
-import ru.practicum.model.Stats;
-import ru.practicum.repository.StatView;
+import ru.practicum.stats.dto.StatRequestDto;
+import ru.practicum.stats.dto.StatResponseDto;
+import ru.practicum.stats.model.Stats;
+import ru.practicum.stats.repository.StatView;
 
 import java.util.List;
 

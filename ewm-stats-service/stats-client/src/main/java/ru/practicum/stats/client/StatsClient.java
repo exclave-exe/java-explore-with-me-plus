@@ -1,12 +1,12 @@
-package ru.practicum.client;
+package ru.practicum.stats.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import ru.practicum.dto.StatRequestDto;
-import ru.practicum.dto.StatResponseDto;
+import ru.practicum.stats.dto.StatRequestDto;
+import ru.practicum.stats.dto.StatResponseDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

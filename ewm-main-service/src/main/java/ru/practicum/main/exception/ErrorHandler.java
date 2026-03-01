@@ -23,6 +23,7 @@ public class ErrorHandler {
                 .reason("Bad request.")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
+                .errors(e.getStackTrace())
                 .build();
     }
 

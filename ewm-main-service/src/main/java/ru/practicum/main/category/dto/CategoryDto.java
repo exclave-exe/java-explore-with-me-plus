@@ -1,4 +1,4 @@
-package ru.practicum.category.dto;
+package ru.practicum.main.category.dto;
 
 import lombok.Builder;
 import lombok.Data;
