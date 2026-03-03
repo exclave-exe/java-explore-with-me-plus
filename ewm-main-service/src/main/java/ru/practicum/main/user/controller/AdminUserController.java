@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.main.user.dto.UserCreateDto;
-import ru.practicum.main.user.dto.UserResponseDto;
+import ru.practicum.main.user.dto.NewUserRequest;
+import ru.practicum.main.user.dto.UserDto;
 import ru.practicum.main.user.service.UserService;
 
 import java.util.List;
@@ -26,13 +26,13 @@ public class AdminUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto createUser(@RequestBody @Valid UserCreateDto userCreateDto) {
-        log.info("Creating user: email={}, name={}", userCreateDto.getEmail(), userCreateDto.getName());
-        return userService.createUser(userCreateDto);
+    public UserDto createUser(@RequestBody @Valid NewUserRequest newUserRequest) {
+        log.info("Creating user: email={}, name={}", newUserRequest.getEmail(), newUserRequest.getName());
+        return userService.createUser(newUserRequest);
     }
 
     @GetMapping
-    public List<UserResponseDto> getUsers(
+    public List<UserDto> getUsers(
             @RequestParam(name = "ids", required = false) List<@Positive Long> ids,
             @RequestParam(name = "from", required = false, defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(name = "size", required = false, defaultValue = "10") @Positive Integer size

@@ -1,8 +1,8 @@
 package ru.practicum.main.user.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.main.user.dto.UserCreateDto;
-import ru.practicum.main.user.dto.UserResponseDto;
+import ru.practicum.main.user.dto.NewUserRequest;
+import ru.practicum.main.user.dto.UserDto;
 import ru.practicum.main.user.dto.UserShortDto;
 import ru.practicum.main.user.model.User;
 
@@ -11,22 +11,22 @@ import java.util.List;
 @Component
 public class UserMapper {
 
-    public User mapToUser(UserCreateDto userCreateDto) {
+    public User mapToUser(NewUserRequest newUserRequest) {
         return User.builder()
-                .name(userCreateDto.getName())
-                .email(userCreateDto.getEmail())
+                .name(newUserRequest.getName())
+                .email(newUserRequest.getEmail())
                 .build();
     }
 
-    public UserResponseDto mapToResponseDto(User user) {
-        return UserResponseDto.builder()
+    public UserDto mapToResponseDto(User user) {
+        return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
     }
 
-    public List<UserResponseDto> mapToListResponseDto(List<User> users) {
+    public List<UserDto> mapToListResponseDto(List<User> users) {
         return users.stream()
                 .map(this::mapToResponseDto)
                 .toList();

@@ -3,15 +3,14 @@ package ru.practicum.main.category.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.main.category.dto.CategoryCreateDto;
 import ru.practicum.main.category.dto.CategoryDto;
-import ru.practicum.main.category.dto.CategoryUpdateDto;
-import ru.practicum.main.event.repository.EventRepository;
-import ru.practicum.main.exception.ConflictException;
-import ru.practicum.main.exception.NotFoundException;
+import ru.practicum.main.category.dto.NewCategoryDto;
 import ru.practicum.main.category.mapper.CategoryMapper;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repository.CategoryRepository;
+import ru.practicum.main.event.repository.EventRepository;
+import ru.practicum.main.exception.ConflictException;
+import ru.practicum.main.exception.NotFoundException;
 
 import java.util.List;
 
@@ -25,9 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto createCategory(CategoryCreateDto categoryCreateDto) {
-        validateCategoryNameExists(categoryCreateDto.getName());
-        Category categoryToCreate = categoryMapper.mapToCategory(categoryCreateDto);
+    public CategoryDto createCategory(NewCategoryDto newCategoryDto) {
+        validateCategoryNameExists(newCategoryDto.getName());
+        Category categoryToCreate = categoryMapper.mapToCategory(newCategoryDto);
         Category createdCategory = categoryRepository.save(categoryToCreate);
         return categoryMapper.mapToResponseDto(createdCategory);
     }
@@ -48,14 +47,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto updateCategory(Long id, CategoryUpdateDto categoryUpdateDto) {
+    public CategoryDto updateCategory(Long id, NewCategoryDto newCategoryDto) {
         Category existingCategory = getCategoryOrThrow(id);
         String oldName = existingCategory.getName();
-        String newName = categoryUpdateDto.getName();
+        String newName = newCategoryDto.getName();
 
         if (!newName.equals(oldName)) {
-            validateCategoryNameExists(categoryUpdateDto.getName());
-            existingCategory.setName(categoryUpdateDto.getName());
+            validateCategoryNameExists(newCategoryDto.getName());
+            existingCategory.setName(newCategoryDto.getName());
         }
 
         return categoryMapper.mapToResponseDto(existingCategory);

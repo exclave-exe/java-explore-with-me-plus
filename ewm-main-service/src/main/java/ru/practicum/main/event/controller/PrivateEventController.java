@@ -6,11 +6,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.main.event.dto.EventFullDto;
-import ru.practicum.main.event.dto.EventShortDto;
-import ru.practicum.main.event.dto.NewEventDto;
-import ru.practicum.main.event.dto.UpdateEventUserRequest;
+import ru.practicum.main.event.dto.*;
 import ru.practicum.main.event.service.PrivateEventService;
+import ru.practicum.main.request.dto.ParticipationRequestDto;
 
 import java.util.List;
 
@@ -42,5 +40,17 @@ public class PrivateEventController {
     public EventFullDto patchUserEvent(@PathVariable Long userId, @PathVariable Long eventId,
                                        @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
         return privateEventService.updateEvent(userId, eventId, updateEventUserRequest);
+    }
+
+    @PatchMapping("/{userId}/events/{eventId}/requests")
+    public EventRequestStatusUpdateResult updateRequestStatuses(@PathVariable @Positive Long userId,
+                                                                @PathVariable @Positive Long eventId,
+                                                                @RequestBody @Valid EventRequestStatusUpdateRequest request) {
+        return privateEventService.updateRequestStatuses(userId, eventId, request);
+    }
+
+    @GetMapping("/{userId}/events/{eventId}/requests")
+    public List<ParticipationRequestDto> getEventRequests(@PathVariable Long userId, @PathVariable Long eventId) {
+        return privateEventService.getEventRequests(userId, eventId);
     }
 }

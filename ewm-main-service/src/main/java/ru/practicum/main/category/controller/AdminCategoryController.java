@@ -7,9 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.main.category.dto.CategoryCreateDto;
 import ru.practicum.main.category.dto.CategoryDto;
-import ru.practicum.main.category.dto.CategoryUpdateDto;
+import ru.practicum.main.category.dto.NewCategoryDto;
 import ru.practicum.main.category.service.CategoryService;
 
 @RestController
@@ -24,16 +23,16 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@RequestBody @Valid CategoryCreateDto categoryCreateDto) {
-        log.info("Creating category: name={}", categoryCreateDto.getName());
-        return categoryService.createCategory(categoryCreateDto);
+    public CategoryDto createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
+        log.info("Creating category: name={}", newCategoryDto.getName());
+        return categoryService.createCategory(newCategoryDto);
     }
 
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@PathVariable @Positive Long catId,
-                                      @RequestBody @Valid CategoryUpdateDto categoryUpdateDto) {
-        log.info("Creating category: new name={}", categoryUpdateDto.getName());
-        return categoryService.updateCategory(catId, categoryUpdateDto);
+                                      @RequestBody @Valid NewCategoryDto newCategoryDto) {
+        log.info("Updating category: new name={}", newCategoryDto.getName());
+        return categoryService.updateCategory(catId, newCategoryDto);
     }
 
     @DeleteMapping("/{catId}")

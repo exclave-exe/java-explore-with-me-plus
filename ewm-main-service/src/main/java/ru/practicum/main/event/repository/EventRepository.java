@@ -24,12 +24,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND (e.eventDate BETWEEN ?4 AND ?5) " +
             "AND (?6 = false AND e.participantLimit > 0)")
     List<Event> getPublishedEventsWithRange(String text,
-                          List<Long> categories,
-                          Boolean paid,
-                          LocalDateTime rangeStart,
-                          LocalDateTime rangeEnd,
-                          Boolean onlyAvailable,
-                          PageRequest pageRequest);
+                                            List<Long> categories,
+                                            Boolean paid,
+                                            LocalDateTime rangeStart,
+                                            LocalDateTime rangeEnd,
+                                            Boolean onlyAvailable,
+                                            PageRequest pageRequest);
 
     @Query("SELECT e " +
             "FROM Event e " +
@@ -62,7 +62,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND (e.state IN ?2 OR ?2 IS null) " +
             "AND (e.category.id IN ?3 OR ?3 IS null) " +
             "AND (e.eventDate > CURRENT_TIMESTAMP) ")
-    List<Event> getAllEvents(List<Long> users,  List<String> states, List<Long> categories,
+    List<Event> getAllEvents(List<Long> users, List<String> states, List<Long> categories,
                              LocalDateTime timestamp, PageRequest pageRequest);
 
     List<Event> findAllByInitiator_Id(Long userId, PageRequest pageRequest);
@@ -70,4 +70,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<Event> findByIdAndInitiator_Id(Long eventId, Long userId);
 
     boolean existsByCategory_Id(Long categoryId);
+
+    Optional<Event> findById(Long id);
+
+    boolean existsByIdAndInitiatorId(Long eventId, Long userId);
 }

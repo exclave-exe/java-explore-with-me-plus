@@ -3,12 +3,12 @@ package ru.practicum.main.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.main.user.dto.UserCreateDto;
-import ru.practicum.main.user.dto.UserResponseDto;
+import ru.practicum.main.exception.ConflictException;
+import ru.practicum.main.user.dto.NewUserRequest;
+import ru.practicum.main.user.dto.UserDto;
 import ru.practicum.main.user.mapper.UserMapper;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repository.UserRepository;
-import ru.practicum.main.exception.ConflictException;
 
 import java.util.List;
 
@@ -21,16 +21,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto createUser(UserCreateDto userCreateDto) {
-        validateEmailExists(userCreateDto.getEmail());
-        User userToCreate = userMapper.mapToUser(userCreateDto);
+    public UserDto createUser(NewUserRequest newUserRequest) {
+        validateEmailExists(newUserRequest.getEmail());
+        User userToCreate = userMapper.mapToUser(newUserRequest);
         User createdUser = userRepository.save(userToCreate);
         return userMapper.mapToResponseDto(createdUser);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponseDto> getUsers(List<Long> ids, Integer from, Integer size) {
+    public List<UserDto> getUsers(List<Long> ids, Integer from, Integer size) {
         List<User> existingUsers = (ids == null || ids.isEmpty())
                 ? userRepository.findAllWithOffset(from, size)
                 : userRepository.findByIdsWithOffset(ids, from, size);

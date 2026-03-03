@@ -1,8 +1,8 @@
 package ru.practicum.main.category.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.main.category.dto.CategoryCreateDto;
 import ru.practicum.main.category.dto.CategoryDto;
+import ru.practicum.main.category.dto.NewCategoryDto;
 import ru.practicum.main.category.model.Category;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.List;
 @Component
 public class CategoryMapper {
 
-    public Category mapToCategory(CategoryCreateDto categoryCreateDto) {
+    public Category mapToCategory(NewCategoryDto newCategoryDto) {
         return Category.builder()
-                .name(categoryCreateDto.getName())
+                .name(newCategoryDto.getName())
                 .build();
     }
 

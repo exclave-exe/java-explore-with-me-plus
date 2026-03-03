@@ -106,8 +106,11 @@ public class AdminEventServiceImpl implements AdminEventService {
                 case PUBLISH_EVENT: {
                     event.setState(EventState.PUBLISHED);
                     event.setPublishedOn(LocalDateTime.now());
-                } break;
-                case REJECT_EVENT: event.setState(EventState.CANCELED); break;
+                }
+                break;
+                case REJECT_EVENT:
+                    event.setState(EventState.CANCELED);
+                    break;
             }
         }
 

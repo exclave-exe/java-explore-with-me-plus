@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -101,6 +102,18 @@ public class ErrorHandler {
                 .status(HttpStatus.BAD_REQUEST.name())
                 .reason("Incorrectly made request.")
                 .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .errors(Arrays.asList(e.getStackTrace()))
+                .build();
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMissingParam(MissingServletRequestParameterException e) {
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("Bad Request")
+                .message("Missing request parameter: " + e.getParameterName())
                 .timestamp(LocalDateTime.now())
                 .errors(Arrays.asList(e.getStackTrace()))
                 .build();

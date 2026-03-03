@@ -21,10 +21,10 @@ public class StatServiceImpl implements StatService {
     @Override
     public void hit(String appName, HttpServletRequest request) {
         statsClient.hit(StatRequestDto.builder()
-                        .app(appName)
-                        .uri(request.getRequestURI())
-                        .ip(request.getRemoteAddr())
-                        .timestamp(LocalDateTime.now())
+                .app(appName)
+                .uri(request.getRequestURI())
+                .ip(request.getRemoteAddr())
+                .timestamp(LocalDateTime.now())
                 .build());
     }
 

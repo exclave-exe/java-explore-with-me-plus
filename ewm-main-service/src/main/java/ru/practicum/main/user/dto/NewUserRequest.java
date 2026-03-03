@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreateDto {
+public class NewUserRequest {
 
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Email должен содержать символ: @")
