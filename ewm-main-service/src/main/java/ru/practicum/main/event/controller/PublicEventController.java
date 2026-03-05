@@ -9,7 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
-import ru.practicum.main.event.service.PublicEventService;
+import ru.practicum.main.event.dto.SearchParams;
+import ru.practicum.main.event.service.EventService;
+import ru.practicum.main.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,10 +22,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicEventController {
 
-    private final PublicEventService publicEventService;
+    private final EventService eventService;
 
     @GetMapping
-    public List<EventShortDto> getEvents(@RequestParam(defaultValue = "") String text,
+    public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
                                          @RequestParam(required = false) List<Long> categories,
                                          @RequestParam(required = false) Boolean paid,
                                          @RequestParam(required = false)
@@ -35,12 +37,28 @@ public class PublicEventController {
                                          @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                          @RequestParam(defaultValue = "10") @Positive int size,
                                          HttpServletRequest request) {
-        return publicEventService.getEvents(text, categories, paid, rangeStart,
-                rangeEnd, onlyAvailable, sort, from, size, request);
+
+        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
+            throw new BadRequestException("rangeEnd must be after rangeStart");
+        }
+
+        SearchParams searchParams = SearchParams.builder()
+                .text(text)
+                .categories(categories)
+                .paid(paid)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .onlyAvailable(onlyAvailable)
+                .sort(sort)
+                .from(from)
+                .size(size)
+                .build();
+
+        return eventService.getEvents(searchParams, request);
     }
 
     @GetMapping("/{id}")
     public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
-        return publicEventService.getEvent(id, request);
+        return eventService.getEvent(id, request);
     }
 }

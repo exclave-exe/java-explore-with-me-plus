@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.event.dto.EventFullDto;
+import ru.practicum.main.event.dto.SearchParamsAdmin;
 import ru.practicum.main.event.dto.UpdateEventAdminRequest;
-import ru.practicum.main.event.service.AdminEventService;
+import ru.practicum.main.event.service.EventService;
+import ru.practicum.main.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
 public class AdminEventController {
-    public final AdminEventService adminEventService;
+    public final EventService eventService;
 
     @GetMapping
     public List<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
@@ -29,12 +31,27 @@ public class AdminEventController {
                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                         @RequestParam(defaultValue = "10") @Positive int size) {
-        return adminEventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+
+        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
+            throw new BadRequestException("rangeEnd must be after rangeStart");
+        }
+
+        SearchParamsAdmin searchParamsAdmin = SearchParamsAdmin.builder()
+                .users(users)
+                .states(states)
+                .categories(categories)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .from(from)
+                .size(size)
+                .build();
+
+        return eventService.getEvents(searchParamsAdmin);
     }
 
     @PatchMapping("/{eventId}")
     public EventFullDto patchEvent(@PathVariable Long eventId,
                                    @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest) {
-        return adminEventService.updateEvent(eventId, updateEventAdminRequest);
+        return eventService.updateEvent(eventId, updateEventAdminRequest);
     }
 }
