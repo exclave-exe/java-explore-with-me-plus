@@ -13,6 +13,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
+
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
 

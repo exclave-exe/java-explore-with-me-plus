@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/events")
 @Validated
+
 @RequiredArgsConstructor
+@Slf4j
 public class PublicEventController {
 
     private final EventService eventService;
@@ -37,6 +40,7 @@ public class PublicEventController {
                                          @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                          @RequestParam(defaultValue = "10") @Positive int size,
                                          HttpServletRequest request) {
+        log.info("Getting events: rangeStart={}, from={}, size={}", rangeStart, from, size);
 
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("rangeEnd must be after rangeStart");
@@ -59,6 +63,7 @@ public class PublicEventController {
 
     @GetMapping("/{id}")
     public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
+        log.info("Getting event: id={}", id);
         return eventService.getEvent(id, request);
     }
 }

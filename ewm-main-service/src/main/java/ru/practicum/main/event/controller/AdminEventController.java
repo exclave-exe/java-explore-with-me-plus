@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.SearchParamsAdmin;
@@ -17,8 +19,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/events")
+@Validated
+
 @RequiredArgsConstructor
+@Slf4j
 public class AdminEventController {
+
     public final EventService eventService;
 
     @GetMapping
@@ -31,6 +37,8 @@ public class AdminEventController {
                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                         @RequestParam(defaultValue = "10") @Positive int size) {
+
+        log.info("Getting events: rangeStart={}, rangeEnd={}, from={}, size={}", rangeStart, rangeEnd, from, size);
 
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("rangeEnd must be after rangeStart");
@@ -52,6 +60,7 @@ public class AdminEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto patchEvent(@PathVariable Long eventId,
                                    @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest) {
+        log.info("Updating event: eventId={}", eventId);
         return eventService.updateEvent(eventId, updateEventAdminRequest);
     }
 }

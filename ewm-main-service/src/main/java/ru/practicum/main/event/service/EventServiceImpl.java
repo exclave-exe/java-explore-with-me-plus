@@ -40,6 +40,7 @@ import static ru.practicum.main.event.repository.EventRepository.Specs.*;
 @Transactional(readOnly = true)
 @Slf4j
 public class EventServiceImpl implements EventService {
+
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final CategoryRepository categoryRepository;
@@ -139,7 +140,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto getEvent(Long id, HttpServletRequest request) {
         Event event = eventRepository.findByIdAndStateIs(id, EventState.PUBLISHED)
-                .orElseThrow(() -> new NotFoundException("Опубликованное событие с id " + id + " не найдено."));
+                .orElseThrow(() -> new NotFoundException("Public event with id " + id + " not found"));
 
         enrichEvent(event);
 
@@ -151,8 +152,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto getUserEvent(Long userId, Long eventId) {
         Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId)
-                .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " и id инициатора " +
-                        userId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Event with id " + eventId + " and initiator id " + userId +
+                        " not found"));
 
         enrichEvent(event);
 
@@ -163,13 +164,13 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = false)
     public EventFullDto createEvent(Long userId, NewEventDto newEventDto) {
         Category category = categoryRepository.findById(newEventDto.getCategory())
-                .orElseThrow(() -> new NotFoundException("Категория " + newEventDto.getCategory() + " не найдена."));
+                .orElseThrow(() -> new NotFoundException("Category with id " + newEventDto.getCategory() + " not found"));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь " + userId + " не найден."));
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
 
         if (!newEventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(2)))
-            throw new BadRequestException("Дата и время не могут быть раньше чем через два часа от текущего момента");
+            throw new BadRequestException("Event date cannot be earlier than two hours from now");
 
         Event event = Event.builder()
                 .annotation(newEventDto.getAnnotation())
@@ -195,18 +196,18 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = false)
     public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Event with id " + eventId + " not found"));
 
         if (!event.getState().equals(EventState.PENDING))
-            throw new ConflictException("Событие можно опубликовать или отклонить если оно в состоянии ожидания");
+            throw new ConflictException("Event can only be published or rejected if it is in the pending state");
 
         if (updateEventAdminRequest.getAnnotation() != null)
             event.setAnnotation(updateEventAdminRequest.getAnnotation());
 
         if (updateEventAdminRequest.getCategory() != null) {
             event.setCategory(categoryRepository.findById(updateEventAdminRequest.getCategory())
-                    .orElseThrow(() -> new NotFoundException("Категория с id " +
-                            updateEventAdminRequest.getCategory() + " не найдена")));
+                    .orElseThrow(() -> new NotFoundException("Category with id " + updateEventAdminRequest.getCategory() +
+                            " not found")));
         }
 
         if (updateEventAdminRequest.getDescription() != null)
@@ -217,10 +218,10 @@ public class EventServiceImpl implements EventService {
             if (updateEventAdminRequest.getEventDate().isAfter(LocalDateTime.now().plusHours(1)))
                 event.setEventDate(updateEventAdminRequest.getEventDate());
             else
-                throw new BadRequestException("Дата изменяемого события должна быть минимум через час от текущей");
+                throw new BadRequestException("Event date cannot be earlier than one hour from now");
 
         } else if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(1))) {
-            throw new BadRequestException("Дата изменяемого события должна быть минимум через час от текущей");
+            throw new BadRequestException("Event date cannot be earlier than one hour from now");
         }
 
         if (updateEventAdminRequest.getLocation() != null)
@@ -260,23 +261,23 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = false)
     public EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден"));
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Event with id " + eventId + " not found"));
 
         if (!Objects.equals(event.getInitiator().getId(), user.getId()))
-            throw new ConflictException("Изменять событие может только инициатор.");
+            throw new ConflictException("User cannot update event that is not initiated by them");
 
         if (event.getState().equals(EventState.PUBLISHED))
-            throw new ConflictException("Опубликованные события нельзя изменять");
+            throw new ConflictException("Event cannot be updated once published");
 
         if (updateEventUserRequest.getAnnotation() != null)
             event.setAnnotation(updateEventUserRequest.getAnnotation());
 
         if (updateEventUserRequest.getCategory() != null) {
             event.setCategory(categoryRepository.findById(updateEventUserRequest.getCategory())
-                    .orElseThrow(() -> new NotFoundException("Категория с id " +
-                            updateEventUserRequest.getCategory() + " не найдена")));
+                    .orElseThrow(() -> new NotFoundException("Category with id " + updateEventUserRequest.getCategory() +
+                            " not found")));
         }
 
         if (updateEventUserRequest.getDescription() != null)
@@ -287,10 +288,10 @@ public class EventServiceImpl implements EventService {
             if (updateEventUserRequest.getEventDate().isAfter(LocalDateTime.now().plusHours(2)))
                 event.setEventDate(updateEventUserRequest.getEventDate());
             else
-                throw new BadRequestException("Дата изменяемого события должна быть минимум через 2 часа от текущей");
+                throw new BadRequestException("Event date cannot be earlier than two hours from now");
 
         } else if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
-            throw new BadRequestException("Дата изменяемого события должна быть минимум через 2 часа от текущей");
+            throw new BadRequestException("Event date cannot be earlier than two hours from now");
         }
 
         if (updateEventUserRequest.getLocation() != null)
