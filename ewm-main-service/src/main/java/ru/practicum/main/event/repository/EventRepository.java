@@ -14,6 +14,7 @@ import ru.practicum.main.user.model.User_;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
@@ -72,4 +73,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
     boolean existsByCategory_Id(Long categoryId);
 
     boolean existsByIdAndInitiatorId(Long eventId, Long userId);
+
+    List<Event> findAllByIdIn(Set<Long> eventsId);
 }
