@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ import ru.practicum.main.request.model.RequestStatus;
 import ru.practicum.main.request.repository.RequestRepository;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repository.UserRepository;
+import ru.practicum.main.util.PaginationUtil;
 import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.dto.StatRequestDto;
 import ru.practicum.stats.dto.StatResponseDto;
@@ -55,7 +56,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> getEvents(SearchParamsAdmin searchParamsAdmin) {
 
-        PageRequest pr = PageRequest.of(searchParamsAdmin.getFrom(), searchParamsAdmin.getSize());
+        Pageable pr = PaginationUtil.createPageRequest(searchParamsAdmin.getFrom(), searchParamsAdmin.getSize());
 
         List<Event> events;
 
@@ -88,8 +89,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> getEvents(SearchParams searchParams, HttpServletRequest request) {
-        PageRequest pr = PageRequest.of(searchParams.getFrom(), searchParams.getSize(),
-                getSort(searchParams.getSort()));
+        Pageable pr = PaginationUtil.createPageRequest(searchParams.getFrom(), searchParams.getSize());
 
         List<Event> events;
 
@@ -109,17 +109,13 @@ public class EventServiceImpl implements EventService {
         } else {
             specification = specification.and(afterNow());
         }
+        if (searchParams.getOnlyAvailable() != null && searchParams.getOnlyAvailable()) {
+            specification = specification.and(onlyAvailable());
+        }
 
-        //TODO сделать по человечески
         events = eventRepository.findAll(specification, pr).getContent();
 
         enrichEvents(events);
-
-        if (searchParams.getOnlyAvailable() == true) {
-            events = events.stream()
-                    .filter(e -> e.getConfirmedRequests() < e.getParticipantLimit())
-                    .toList();
-        }
 
         hit(app, request);
 
@@ -128,7 +124,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> getUserEvents(Long userId, int from, int size) {
-        PageRequest pr = PageRequest.of(from, size);
+        Pageable pr = PaginationUtil.createPageRequest(from, size);
 
         List<Event> events = eventRepository.findAllByInitiator_Id(userId, pr);
 
