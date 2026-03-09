@@ -94,8 +94,8 @@ public class CompilationServiceImpl implements CompilationService {
         List<Compilation> compilations = compilationRepository.findAllWithEvents(ids, pageable.getSort());
 
         return compilations.stream()
-                .map(compilation -> compilationMapper.toCompilationDto(compilation
-                        , new HashSet<>(eventMapper.mapToEventShortDtoList(new ArrayList<>(compilation.getEvents())))))
+                .map(compilation -> compilationMapper.toCompilationDto(compilation,
+                        new HashSet<>(eventMapper.mapToEventShortDtoList(new ArrayList<>(compilation.getEvents())))))
                 .toList();
     }
 }
