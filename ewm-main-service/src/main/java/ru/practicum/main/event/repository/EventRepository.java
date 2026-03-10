@@ -1,6 +1,8 @@
 package ru.practicum.main.event.repository;
 
-import org.springframework.data.domain.PageRequest;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -9,11 +11,15 @@ import ru.practicum.main.category.model.Category_;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.model.Event_;
+import ru.practicum.main.request.model.Request;
+import ru.practicum.main.request.model.RequestStatus;
+import ru.practicum.main.request.model.Request_;
 import ru.practicum.main.user.model.User_;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
@@ -61,15 +67,30 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
             return ((root, query, criteriaBuilder)
                     -> root.get(Event_.initiator).get(User_.id).in(users));
         }
+
+        static Specification<Event> onlyAvailable() {
+            return (root, query, criteriaBuilder) -> {
+                Subquery<Long> subquery = query.subquery(Long.class);
+                Root<Request> requestRoot = subquery.from(Request.class);
+
+                subquery.select(criteriaBuilder.count(requestRoot))
+                        .where(criteriaBuilder.equal(requestRoot.get(Request_.event), root),
+                                criteriaBuilder.equal(requestRoot.get(Request_.status), RequestStatus.CONFIRMED));
+
+                return criteriaBuilder.lt(subquery, root.get(Event_.participantLimit));
+            };
+        }
     }
 
     Optional<Event> findByIdAndStateIs(Long eventId, EventState state);
 
-    List<Event> findAllByInitiator_Id(Long userId, PageRequest pageRequest);
+    List<Event> findAllByInitiator_Id(Long userId, Pageable pageable);
 
     Optional<Event> findByIdAndInitiator_Id(Long eventId, Long userId);
 
     boolean existsByCategory_Id(Long categoryId);
 
     boolean existsByIdAndInitiatorId(Long eventId, Long userId);
+
+    List<Event> findAllByIdIn(Set<Long> eventsId);
 }
