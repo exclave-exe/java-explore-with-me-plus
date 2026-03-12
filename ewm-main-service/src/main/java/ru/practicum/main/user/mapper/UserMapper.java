@@ -38,4 +38,10 @@ public class UserMapper {
                 .name(user.getName())
                 .build();
     }
+
+    public List<UserShortDto> mapToListUserShortDto(List<User> users) {
+        return users.stream()
+                .map(this::mapToUserShortDto)
+                .toList();
+    }
 }
