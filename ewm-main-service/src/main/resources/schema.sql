@@ -60,3 +60,15 @@ CREATE TABLE IF NOT EXISTS compilations_to_events
     CONSTRAINT fk_event_id FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
     CONSTRAINT fk_compilation_id FOREIGN KEY (compilation_id) REFERENCES compilations (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS subscriptions
+(
+    id                     BIGSERIAL PRIMARY KEY,
+    follower_id            BIGINT NOT NULL,
+    followed_id            BIGINT NOT NULL,
+    created                TIMESTAMP NOT NULL,
+
+    CONSTRAINT fk_subscription_follower FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_subscription_followed FOREIGN KEY (followed_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT uk_follower_followed UNIQUE (follower_id, followed_id)
+);
